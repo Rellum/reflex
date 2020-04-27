@@ -159,17 +159,14 @@ func connect(n int) (*sql.DB, error) {
 func getURI() string {
 	uri := *db_test_uri
 	if uri != db_test_uri_default {
-		panic("1_" + uri)
 		return uri
 	}
 
 	uri = os.Getenv("DB_TEST_URI")
 	if uri != "" {
-		panic("2_" + uri)
 		return uri
 	}
 
-	panic("3_" + uri)
 	return db_test_uri_default
 }
 
