@@ -26,7 +26,7 @@ func ConnectForTesting(t *testing.T) *sql.DB {
 }
 
 func getDefaultURI() string {
-	uri := os.Getenv("DB_EXAMPLE_URI")
+	uri := os.Getenv("DB_EXAMPLE_CLIENT_URI")
 	if uri != "" {
 		return uri
 	}
