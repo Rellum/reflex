@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	db_test_uri = flag.String("db_test_base", "root@unix("+getSocketFile()+")/test?", "Test database uri")
+	db_test_uri_default = "root@unix(" + getSocketFile() + ")/test?"
+	db_test_uri         = flag.String("db_test_base", db_test_uri_default, "Test database uri")
 
 	eventsTimeField          = "timestamp"
 	eventsTypeField          = "type"
@@ -140,7 +141,7 @@ func createCursorsTable(t *testing.T, dbc *sql.DB, name string, temp bool) {
 }
 
 func connect(n int) (*sql.DB, error) {
-	str := *db_test_uri + "parseTime=true&collation=utf8mb4_general_ci"
+	str := getURI() + "parseTime=true&collation=utf8mb4_general_ci"
 	dbc, err := sql.Open("mysql", str)
 	if err != nil {
 		return nil, err
@@ -153,6 +154,20 @@ func connect(n int) (*sql.DB, error) {
 	}
 
 	return dbc, nil
+}
+
+func getURI() string {
+	uri := *db_test_uri
+	if uri != db_test_uri_default {
+		return uri
+	}
+
+	uri = os.Getenv("DB_TEST_URI")
+	if uri != "" {
+		return uri
+	}
+
+	return db_test_uri_default
 }
 
 func getSocketFile() string {
