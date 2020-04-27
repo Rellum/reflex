@@ -23,8 +23,12 @@ func Connect() (*sql.DB, error) {
 	return db.Connect(*db_example_uri)
 }
 
-func ConnectForTesting(t *testing.T) (*sql.DB, error) {
-	return db.ConnectForTesting(t, *db_example_uri, "schema.sql")
+func ConnectForTesting(t *testing.T) *sql.DB {
+	dbc, err := db.ConnectForTesting(t, *db_example_uri, "schema.sql")
+	if err != nil {
+		t.Fatal(*db_example_uri, err)
+	}
+	return dbc
 }
 
 func getDefaultURI() string {
@@ -33,5 +37,5 @@ func getDefaultURI() string {
 		return uri
 	}
 
-	return "root:@tcp(localhost:3306)/test?parseTime=true"
+	return "root@tcp(localhost:3306)/test?parseTime=true"
 }
