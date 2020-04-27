@@ -9,10 +9,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/luno/reflex/example/internal/db"
 	"github.com/luno/reflex/rsql"
+	"github.com/stretchr/testify/require"
 )
 
 var (
-	db_example_uri = flag.String("db_example_uri", getDefaultURI(), "URI of reflex example server DB")
+	dbURI = flag.String("db_example_uri", getDefaultURI(), "URI of reflex example server DB")
 
 	Events1 = rsql.NewEventsTable("server_events1")
 	Events2 = rsql.NewEventsTable("server_events2")
@@ -20,14 +21,12 @@ var (
 )
 
 func Connect() (*sql.DB, error) {
-	return db.Connect(*db_example_uri)
+	return db.Connect(*dbURI)
 }
 
 func ConnectForTesting(t *testing.T) *sql.DB {
-	dbc, err := db.ConnectForTesting(t, *db_example_uri+"parseTime=true", "schema.sql")
-	if err != nil {
-		t.Fatal(*db_example_uri, err)
-	}
+	dbc, err := db.ConnectForTesting(t, *dbURI+"parseTime=true", "schema.sql")
+	require.NoError(t, err, "uri: %s\nerr: %v", *dbURI, err)
 	return dbc
 }
 
